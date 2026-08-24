@@ -1,0 +1,5 @@
+Incident evidence fixture C.
+Incident identifier: RF-DIFFERENT-9
+Affected service: billing-api
+Region: us-east
+Started: 2026-08-25 15:30 UTC

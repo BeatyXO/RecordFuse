@@ -48,3 +48,22 @@ def test_studionet_same_entity_live_consensus(default_account):
     assert contract.same_entity(args=[1, 2]).call() is True
     assert contract.canonical_of(args=[1]).call() == contract.canonical_of(args=[2]).call()
     assert set(cluster["members"]) == {"1", "2"}
+
+
+def test_studionet_distinct_entity_live_consensus(default_account):
+    factory = get_contract_factory("RecordFuse")
+    contract = factory.deploy(account=default_account)
+    contract.create_namespace(args=["Live incidents", "service incident", RULE]).transact()
+    contract.register_record(args=[1, "RF-A", LIVE_BASE + "incident_same_a.txt", "Incident RF-SHARED-42"]).transact()
+    contract.register_record(args=[1, "RF-C", LIVE_BASE + "incident_distinct.txt", "Incident RF-DIFFERENT-9"]).transact()
+    proposal_tx = contract.propose_merge(args=[1, 2, "check conflicting identity evidence"]).transact()
+    proposal_id = int(proposal_tx["consensus_data"]["leader_receipt"][0]["result"]["payload"]["readable"])
+    resolve_tx = contract.resolve_merge(args=[proposal_id]).transact(wait_retries=100)
+    proposal = json.loads(contract.proposal_of(args=[proposal_id]).call())
+    print(f"LIVE_DISTINCT_RESOLVE_TX={resolve_tx.get('hash')}")
+    print(f"LIVE_DISTINCT_PROPOSAL={json.dumps(proposal, sort_keys=True)}")
+    assert proposal["status"] == "DISTINCT_ENTITY"
+    assert proposal["conflicting_identifiers"]
+    assert contract.same_entity(args=[1, 2]).call() is False
+    with pytest.raises(Exception):
+        contract.propose_merge(args=[2, 1, "retry terminal pair"]).transact()
