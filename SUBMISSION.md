@@ -14,4 +14,11 @@ https://github.com/BeatyXO/RecordFuse
 
 ## StudioNet Explorer
 
-Add the deployed contract explorer URL after final StudioNet deployment.
+Canonical Studionet deployment: `0x3A7ca437743B648d7c74841E9490A6ed43Ae5bB7`.
+
+Verified smoke transactions:
+
+- Namespace: `0xc15560e02cbb8593dfae6d0e83fd08ebd023613d555594a438d2f94b6f5e9ebb`
+- Record: `0xdf08b5b161b9b3123d0ad0bf25f9cad1811e51b1075eed14898d622a56b57d3d`
+
+The live evidence proves deployment, consensus-backed deterministic writes, and public reads. Semantic merge runtime evidence remains intentionally unclaimed because the committed integration smoke test does not invoke an external merge source.
