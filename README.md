@@ -222,6 +222,14 @@ RecordFuse deliberately biases against false-positive merges because canonical f
 
 See [docs/SECURITY.md](docs/SECURITY.md) for limitations and integration guidance.
 
+## Consensus-shopping protection
+
+Terminal identity decisions are tied to the symmetric canonical pair. `SAME_ENTITY` fuses the clusters and therefore cannot be reproposed; `DISTINCT_ENTITY` is terminal for the immutable evidence pair. Only `INCONCLUSIVE` and `EXTERNAL_FAILURE` may be reopened through `retry_unresolved()`.
+
+## Differentiation
+
+RecordFuse is a domain-neutral canonicalization primitive, not an archive-specific product or frontend. Each namespace supplies its own immutable identity rule, and downstream contracts consume `canonical_of()` / `same_entity()` without an archive schema or application layer.
+
 ## What RecordFuse is not
 
 RecordFuse is **not** a truth oracle, credibility score, dispute escrow, reputation system, or generic "AI decides X" wrapper. It solves one reusable state problem: maintaining canonical identity across semantically duplicate records while keeping the consensus boundary explicit and auditable.
