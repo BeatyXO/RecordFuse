@@ -16,6 +16,7 @@ https://github.com/BeatyXO/RecordFuse
 
 Canonical hardened Studionet deployment: `0xbdDBcae297B7a816Fbb20274CFDdCFEdE71Ff841`.
 The earlier `0x3A7ca437743B648d7c74841E9490A6ed43Ae5bB7` deployment is superseded pre-hardening history.
+Explorer/Studio: [GenLayer Studio](https://studio.genlayer.com/).
 
 Verified smoke transactions:
 
@@ -25,3 +26,5 @@ Verified smoke transactions:
 The live evidence proves deployment, consensus-backed deterministic writes, public reads, and the semantic merge path.
 
 Live semantic merge evidence: resolve transaction `0x4f1930860d13c5446bc2d681f25b830f0aaea63166e59cad2a500e12fdde0e34` reached `SAME_ENTITY` with majority agreement; proposal status was `FUSED`, canonical ID `1`, and the cluster contained records `1` and `2`.
+
+Live distinct evidence: resolve transaction `0x945f425e540fa5aded8b81f9bf343ea525aa2195d4305bea60e7d36dd8a6f3fc` reached `DISTINCT_ENTITY` with conflicting identifiers; the reversed terminal pair returned an explicit rollback.

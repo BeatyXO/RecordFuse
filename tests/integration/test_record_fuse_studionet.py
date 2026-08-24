@@ -65,5 +65,7 @@ def test_studionet_distinct_entity_live_consensus(default_account):
     assert proposal["status"] == "DISTINCT_ENTITY"
     assert proposal["conflicting_identifiers"]
     assert contract.same_entity(args=[1, 2]).call() is False
-    with pytest.raises(Exception):
-        contract.propose_merge(args=[2, 1, "retry terminal pair"]).transact()
+    retry_tx = contract.propose_merge(args=[2, 1, "retry terminal pair"]).transact()
+    retry_result = retry_tx["consensus_data"]["leader_receipt"][0]["result"]
+    assert retry_result["status"] == "rollback"
+    assert "terminal decision" in retry_result["payload"]

@@ -41,6 +41,7 @@ This is deterministic registry smoke evidence. A live semantic merge transaction
 ## Hardened live semantic evidence
 
 - Hardened deployment address: `0xbdDBcae297B7a816Fbb20274CFDdCFEdE71Ff841`
+- Studio: [GenLayer Studio](https://studio.genlayer.com/)
 - Hardened contract source: commit `92fee3f` (contract blob remains unchanged in subsequent documentation/test commits)
 - Namespace transaction: `0x78912ebadc56877fda8d3b4252418ef053098d6690dce82107b72870addd87cd`
 - Record A transaction: `0x9f8a4af7ccfb425981612a250dc53507faeef69ed7b762dca8c1ad08580fce20`
@@ -51,3 +52,9 @@ This is deterministic registry smoke evidence. A live semantic merge transaction
 - Final state: proposal `FUSED`, canonical ID `1`, cluster members `1` and `2`.
 
 The live evidence uses the committed public fixtures under `tests/fixtures/` and exercises web rendering, LLM reasoning, comparative consensus, and deterministic fusion.
+
+### Live DISTINCT_ENTITY
+
+- Resolve transaction: `0x945f425e540fa5aded8b81f9bf343ea525aa2195d4305bea60e7d36dd8a6f3fc`
+- Decision: `DISTINCT_ENTITY` with non-empty conflicting identifiers.
+- Canonical roots remained separate; reproposal of the reversed terminal pair returned a rollback receipt with `EXPECTED: canonical pair already has a terminal decision`.
