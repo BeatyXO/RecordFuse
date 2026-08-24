@@ -1,0 +1,5 @@
+Incident evidence fixture A.
+Incident ID: RF-SHARED-42
+Service: payments-api
+Region: eu-west
+Occurrence window: 2026-08-24 10:02 UTC

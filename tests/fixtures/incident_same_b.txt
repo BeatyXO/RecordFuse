@@ -1,0 +1,5 @@
+Incident evidence fixture B.
+Incident identifier: RF-SHARED-42
+Affected service: payments-api
+Region: eu-west
+Started: 2026-08-24 10:02 UTC

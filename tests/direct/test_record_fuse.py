@@ -69,6 +69,27 @@ def test_register_record_rejects_duplicate_external_ref(direct_deploy, direct_vm
     with direct_vm.expect_revert("EXPECTED"): register(contract, direct_vm, direct_alice, namespace_id, "INC-A", RIGHT_URI, "duplicate")
 
 
+@pytest.mark.parametrize("uri", [
+    "http://example.com/evidence",
+    "https://user:pass@example.com/evidence",
+    "https://localhost/evidence",
+    "https://127.0.0.1/evidence",
+    "https://10.0.0.8/evidence",
+    "https://169.254.1.2/evidence",
+    "https://192.168.1.10/evidence",
+    "https://service.internal/evidence",
+    "https://example.com:8443/evidence",
+])
+def test_register_record_rejects_non_public_evidence_urls(direct_deploy, direct_vm, direct_alice, uri):
+    contract = deploy(direct_deploy, direct_vm); namespace_id = create_namespace(contract, direct_vm, direct_alice)
+    with direct_vm.expect_revert("EXPECTED"): register(contract, direct_vm, direct_alice, namespace_id, "BAD", uri, "evidence")
+
+
+def test_register_record_accepts_https_public_hostname(direct_deploy, direct_vm, direct_alice):
+    contract = deploy(direct_deploy, direct_vm); namespace_id = create_namespace(contract, direct_vm, direct_alice)
+    assert register(contract, direct_vm, direct_alice, namespace_id, "GOOD", "https://example.com/evidence", "evidence") == 1
+
+
 def test_propose_merge_rejects_cross_namespace_records(direct_deploy, direct_vm, direct_alice):
     contract = deploy(direct_deploy, direct_vm); ns1 = create_namespace(contract, direct_vm, direct_alice, "One"); ns2 = create_namespace(contract, direct_vm, direct_alice, "Two")
     a = register(contract, direct_vm, direct_alice, ns1, "A", LEFT_URI, "a"); b = register(contract, direct_vm, direct_alice, ns2, "B", RIGHT_URI, "b")

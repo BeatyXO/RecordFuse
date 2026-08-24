@@ -141,6 +141,8 @@ class RecordFuse(gl.Contract):
             prior = self._proposal(u256(int(self.records[pair_key])))
             if prior["status"] in (STATUS_OPEN, STATUS_INCONCLUSIVE, STATUS_EXTERNAL_FAILURE):
                 raise gl.vm.UserError("EXPECTED: unresolved proposal already exists for canonical pair")
+            if prior["status"] in (STATUS_DISTINCT, STATUS_FUSED):
+                raise gl.vm.UserError("EXPECTED: canonical pair already has a terminal decision")
         proposal_id = self.next_proposal_id
         self.next_proposal_id = proposal_id + u256(1)
         proposal = {"id": str(proposal_id), "namespace_id": str(namespace_id), "left_record_id": str(left_record_id),
@@ -394,7 +396,42 @@ class RecordFuse(gl.Contract):
         return "pair:" + str(namespace_id) + ":" + str(left_value) + ":" + str(right_value)
 
     def _addr(self, value: Address) -> Address: return value if isinstance(value, Address) else Address(value)
-    def _http(self, value: str) -> bool: return value.startswith("https://") or value.startswith("http://")
+    def _http(self, value: str) -> bool:
+        if not isinstance(value, str) or not value.startswith("https://"):
+            return False
+        authority = value[8:]
+        end = len(authority)
+        for marker in ("/", "?", "#"):
+            position = authority.find(marker)
+            if position >= 0 and position < end:
+                end = position
+        host = authority[:end].lower()
+        if len(host) == 0 or "@" in host or ":" in host or "\\" in host:
+            return False
+        if host.endswith(".local") or host.endswith(".localhost") or host.endswith(".internal"):
+            return False
+        if host == "localhost" or host == "localhost.":
+            return False
+        if host.startswith(".") or host.endswith(".") or ".." in host:
+            return False
+        if self._private_ipv4(host):
+            return False
+        return True
+
+    def _private_ipv4(self, host: str) -> bool:
+        parts = host.split(".")
+        if len(parts) != 4:
+            return False
+        values = []
+        for part in parts:
+            if len(part) == 0 or not part.isdigit():
+                return False
+            number = int(part)
+            if number > 255:
+                return False
+            values.append(number)
+        first, second = values[0], values[1]
+        return first == 10 or first == 127 or (first == 169 and second == 254) or (first == 192 and second == 168) or (first == 172 and 16 <= second <= 31)
     def _now(self) -> str:
         raw = getattr(gl, "message_raw", {})
         return str(raw.get("datetime", ""))
