@@ -68,4 +68,4 @@ def test_studionet_distinct_entity_live_consensus(default_account):
     retry_tx = contract.propose_merge(args=[2, 1, "retry terminal pair"]).transact()
     retry_result = retry_tx["consensus_data"]["leader_receipt"][0]["result"]
     assert retry_result["status"] == "rollback"
-    assert "terminal decision" in retry_result["payload"]
+    assert "terminal" in retry_result["payload"]

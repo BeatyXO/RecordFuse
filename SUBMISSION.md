@@ -14,7 +14,7 @@ https://github.com/BeatyXO/RecordFuse
 
 ## StudioNet Explorer
 
-Canonical hardened Studionet deployment: `0xbdDBcae297B7a816Fbb20274CFDdCFEdE71Ff841`.
+Canonical corrected Studionet deployment: `0xF7c785237eEBCb8FE3b109b8CFa3736e82f95A5C`.
 The earlier `0x3A7ca437743B648d7c74841E9490A6ed43Ae5bB7` deployment is superseded pre-hardening history.
 Explorer/Studio: [GenLayer Studio](https://studio.genlayer.com/).
 
@@ -25,8 +25,8 @@ Verified smoke transactions:
 
 The live evidence proves deployment, consensus-backed deterministic writes, public reads, and the semantic merge path.
 
-Live semantic merge evidence: resolve transaction `0x4f1930860d13c5446bc2d681f25b830f0aaea63166e59cad2a500e12fdde0e34` reached `SAME_ENTITY` with majority agreement; proposal status was `FUSED`, canonical ID `1`, and the cluster contained records `1` and `2`.
+Live semantic merge evidence: resolve transaction `0x4ea63a33e5a128b0df0c7b0e723c96f84ecb180a2f222a3efc1f8730b2a435be` reached `SAME_ENTITY` with majority agreement; proposal status was `FUSED`, canonical ID `1`, and the cluster contained records `1` and `2`.
 
-Live distinct evidence: resolve transaction `0x945f425e540fa5aded8b81f9bf343ea525aa2195d4305bea60e7d36dd8a6f3fc` reached `DISTINCT_ENTITY` with conflicting identifiers; the reversed terminal pair returned an explicit rollback.
+Live distinct evidence: resolve transaction `0x88eb0cde23e9cf2e9b4c1ceecc72b4488742f80b342555f28b1b1406da6ce4bd` reached `DISTINCT_ENTITY` with conflicting identifiers; the reversed terminal pair returned an explicit rollback because the cluster-wide constraint was preserved.
 
-Final steward correction: terminal distinctness is now persisted as immutable record-pair constraints and checked across full clusters before any fusion. This prevents indirect intermediate merges from violating a prior distinct decision. The corrected contract requires a fresh deployment and fresh matching live evidence.
+Final steward correction: terminal distinctness is now persisted as immutable record-pair constraints and checked across full clusters before any fusion. This prevents indirect intermediate merges from violating a prior distinct decision. Corrected source commit: `185a358`; the deployed source and committed contract blob are aligned for this evidence.
