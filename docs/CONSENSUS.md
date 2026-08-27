@@ -27,3 +27,7 @@ RecordFuse uses `gl.eq_principle.prompt_comparative`.
 `SAME_ENTITY` with no matched identifiers is downgraded to `INCONCLUSIVE`. `DISTINCT_ENTITY` with no conflicting identifiers is likewise downgraded. Malformed or unknown output is also downgraded.
 
 Fetched content is explicitly framed as untrusted evidence, never executable instructions. High-stakes integrations should prefer stable or content-addressed public evidence where possible.
+
+## Cluster-wide distinctness
+
+Every terminal `DISTINCT_ENTITY` result is also stored as an immutable record-pair constraint. Before creating a proposal or fusing clusters, the contract checks every member pair across the two candidate clusters. Therefore a later intermediate merge cannot absorb records that were previously adjudicated distinct, even when the original pair is no longer the current pair of canonical roots.

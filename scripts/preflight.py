@@ -10,6 +10,7 @@ CHECKS = {
     "comparative consensus": "prompt_comparative" in SOURCE,
     "bounded web evidence": "MAX_EVIDENCE" in SOURCE and "MAX_URI" in SOURCE,
     "terminal pair protection": "terminal decision" in SOURCE,
+    "cluster-wide distinct constraints": "_clusters_conflict" in SOURCE and "distinct_pairs" in SOURCE,
     "symmetric pair key": "if left_value > right_value" in SOURCE,
     "bounded clusters": "MAX_CLUSTER_SIZE" in SOURCE,
     "immutable namespace rule": 'namespace["identity_rule"]' in SOURCE or '"identity_rule": identity_rule' in SOURCE,

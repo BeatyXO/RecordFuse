@@ -6,6 +6,8 @@ Protections include immutable identity rules, prompt-injection treatment of web 
 
 Terminal pair finality prevents consensus shopping: a symmetric canonical pair with a terminal `DISTINCT_ENTITY` decision cannot be reopened by reversing arguments or submitting another proposal. Only `INCONCLUSIVE` and `EXTERNAL_FAILURE` remain retryable through the explicit retry path.
 
+Distinct constraints are preserved at record-pair level and checked across complete candidate clusters. This prevents a sequence of individually valid merges from turning any previously distinct pair into `same_entity`.
+
 ## Known limitations
 
 Fusion is irreversible inside this primitive. High-stakes integrations should use conservative identity rules and separate appeal/finality mechanisms if needed.

@@ -96,6 +96,14 @@ def test_pair_key_is_symmetric_and_terminal_guard_is_present(direct_deploy, dire
     assert "canonical pair already has a terminal decision" in open(CONTRACT, encoding="utf-8").read()
 
 
+def test_distinct_constraint_blocks_intermediate_cluster_fusion(direct_deploy, direct_vm, direct_alice):
+    contract = deploy(direct_deploy, direct_vm); _, a, b, c = seed_three(contract, direct_vm, direct_alice)
+    contract.distinct_pairs[contract._record_pair_key(a, c)] = "historical-distinct"
+    contract._fuse_clusters(a, b)
+    with direct_vm.expect_revert("terminal distinct constraint"):
+        contract._fuse_clusters(a, c)
+
+
 def test_propose_merge_rejects_cross_namespace_records(direct_deploy, direct_vm, direct_alice):
     contract = deploy(direct_deploy, direct_vm); ns1 = create_namespace(contract, direct_vm, direct_alice, "One"); ns2 = create_namespace(contract, direct_vm, direct_alice, "Two")
     a = register(contract, direct_vm, direct_alice, ns1, "A", LEFT_URI, "a"); b = register(contract, direct_vm, direct_alice, ns2, "B", RIGHT_URI, "b")

@@ -45,6 +45,7 @@ class RecordFuse(gl.Contract):
     fused_proposals: u256
     distinct_decisions: u256
     records: TreeMap[str, str]
+    distinct_pairs: TreeMap[str, str]
 
     def __init__(self) -> None:
         self.owner = gl.message.sender_address
@@ -58,6 +59,7 @@ class RecordFuse(gl.Contract):
         self.fused_proposals = u256(0)
         self.distinct_decisions = u256(0)
         self.records = TreeMap[str, str]()
+        self.distinct_pairs = TreeMap[str, str]()
 
     @gl.public.write
     def create_namespace(self, name: str, record_type: str, identity_rule: str) -> u256:
@@ -136,6 +138,8 @@ class RecordFuse(gl.Contract):
         right_root_record = self._record(right_root)
         if len(left_root_record.get("members", [])) + len(right_root_record.get("members", [])) > MAX_CLUSTER_SIZE:
             raise gl.vm.UserError("EXPECTED: resulting canonical cluster too large")
+        if self._clusters_conflict(left_root_record, right_root_record):
+            raise gl.vm.UserError("EXPECTED: canonical clusters have a terminal distinct constraint")
         pair_key = self._pair_key(namespace_id, left_root, right_root)
         if pair_key in self.records:
             prior = self._proposal(u256(int(self.records[pair_key])))
@@ -241,6 +245,7 @@ class RecordFuse(gl.Contract):
         elif decision == DECISION_DISTINCT:
             proposal["status"] = STATUS_DISTINCT
             self.distinct_decisions = self.distinct_decisions + u256(1)
+            self.distinct_pairs[self._record_pair_key(u256(int(proposal["left_record_id"])), u256(int(proposal["right_record_id"]))) ] = str(proposal_id)
         elif decision == DECISION_EXTERNAL_FAILURE:
             proposal["status"] = STATUS_EXTERNAL_FAILURE
         else:
@@ -331,6 +336,8 @@ class RecordFuse(gl.Contract):
             raise gl.vm.UserError("EXPECTED: stale canonical roots")
         if left_root["namespace_id"] != right_root["namespace_id"]:
             raise gl.vm.UserError("EXPECTED: canonical roots cross namespaces")
+        if self._clusters_conflict(left_root, right_root):
+            raise gl.vm.UserError("EXPECTED: canonical clusters have a terminal distinct constraint")
         combined = []
         for raw in left_root.get("members", []):
             value = int(raw)
@@ -364,6 +371,13 @@ class RecordFuse(gl.Contract):
             return "resulting canonical cluster exceeds limit"
         return ""
 
+    def _clusters_conflict(self, left_root: dict, right_root: dict) -> bool:
+        for left_raw in left_root.get("members", []):
+            for right_raw in right_root.get("members", []):
+                if self._record_pair_key(u256(int(left_raw)), u256(int(right_raw))) in self.distinct_pairs:
+                    return True
+        return False
+
     def _terminalize_stale(self, proposal_id: u256, proposal: dict, reason: str) -> None:
         was_open = proposal["status"] == STATUS_OPEN
         proposal.update({"status": STATUS_STALE, "decision": DECISION_STALE, "reason": reason[:MAX_REASON], "resolved_at": self._now()})
@@ -394,6 +408,11 @@ class RecordFuse(gl.Contract):
         left_value = int(left_root); right_value = int(right_root)
         if left_value > right_value: left_value, right_value = right_value, left_value
         return "pair:" + str(namespace_id) + ":" + str(left_value) + ":" + str(right_value)
+
+    def _record_pair_key(self, left_record_id: u256, right_record_id: u256) -> str:
+        left_value = int(left_record_id); right_value = int(right_record_id)
+        if left_value > right_value: left_value, right_value = right_value, left_value
+        return "distinct:" + str(left_value) + ":" + str(right_value)
 
     def _addr(self, value: Address) -> Address: return value if isinstance(value, Address) else Address(value)
     def _http(self, value: str) -> bool:
